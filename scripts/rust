@@ -1,0 +1,21 @@
+#!/bin/bash
+
+. ./config
+
+title "Rust"
+
+INSTALL_FROM_REPOSITORY=true
+
+if $INSTALL_FROM_REPOSITORY
+then
+
+    sudo apt install rustc
+
+else
+
+    if [ $FORCE ] || ! [ -x /usr/local/bin/rustc ]
+    then
+            curl -sSf https://static.rust-lang.org/rustup.sh | sh
+    fi
+
+fi

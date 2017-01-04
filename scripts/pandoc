@@ -1,0 +1,27 @@
+#!/bin/bash
+
+. ./config
+$INTEL || exit
+./haskell
+
+title "Pandoc, LaTeX, PP, ..."
+
+sudo apt update
+sudo apt install \
+	texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-full \
+	graphviz \
+
+cabal install \
+    pandoc \
+    strict temporary
+
+cd $CACHE
+if cd pp 2>/dev/null
+then
+	git pull
+else
+	git clone http://github.com/cdsoft/pp
+	cd pp
+fi
+make pp
+sudo make install

@@ -1,0 +1,223 @@
+#!/bin/bash
+
+SWAPPINESS=10
+
+. ./config
+
+title "System configuration"
+
+info "System packages"
+
+if [ $http_proxy ]
+then
+    sudo tee /etc/apt/apt.conf.d/proxy >/dev/null <<EOF
+Acquire::http::Proxy "$http_proxy";
+Acquire::ftp::Proxy "$ftp_proxy";
+EOF
+else
+    sudo rm -f /etc/apt/apt.conf.d/proxy
+fi
+
+ARCHIVE_SIZE=$(sudo du -m /var/cache/apt/archives | tail -1 | awk '{print $1}')
+[ $ARCHIVE_SIZE -ge 4096 ] && sudo apt clean
+
+sudo apt update
+sudo apt autoclean
+$INTEL && sudo apt install \
+	bash htop \
+	qemu-system qemu-kvm virtualbox \
+	nfs-common autofs5 gvfs-bin \
+	exfat-fuse \
+	dialog \
+	openssh-client openssh-server \
+	rxvt-unicode-256color \
+	numlockx \
+	scrot feh gimp imagemagick scribus inkscape \
+	p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+	evince wkhtmltopdf \
+	libreoffice \
+	volumeicon-alsa pavucontrol \
+	wget wput curl gftp \
+	thunderbird \
+	firefox \
+	mc doublecmd-qt doublecmd-help-en \
+
+$RPI && sudo apt install \
+	bash htop \
+	nfs-common autofs5 gvfs-bin \
+	dialog \
+	openssh-client openssh-server \
+	rxvt-unicode-256color \
+	numlockx \
+	p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+	wget wput curl \
+	mc
+
+sudo apt full-upgrade
+
+info "SDD optimization"
+
+sudo sed -i '/# SSD optimizations/,/# end of optimizations/d' /etc/fstab
+
+# SSD optimisation: http://doc.ubuntu-fr.org/ssd_solid_state_drive
+[ -e /etc/fstab.orig ] || sudo cp /etc/fstab /etc/fstab.orig
+if ! grep -q 'noatime,discard' /etc/fstab
+then
+	sudo sed -i 's#\( /  *ext4  *\)#\1noatime,discard,#' /etc/fstab
+	sudo sed -i 's#\( /home  *ext4  *\)#\1noatime,discard,#' /etc/fstab
+	sudo sed -i 's#\( /boot  *ext2  *\)#\1noatime,discard,#' /etc/fstab
+fi
+
+info "Temporary directory to RAM"
+
+RAMSIZE=$(($(cat /proc/meminfo | head -1 | awk '{print $2}')/1024/2))m
+sudo tee -a /etc/fstab >/dev/null <<EOF
+
+# SSD optimizations
+tmpfs   /tmp                        tmpfs   defaults,size=$RAMSIZE    0   0
+tmpfs   /var/log                    tmpfs   defaults,nosuid,nodev,noatime,mode=0755,size=5%     0   0
+#tmpfs   /var/cache/apt/archives     tmpfs   defaults,size=$RAMSIZE    0    0
+tmpfs   /home/$USER/.cache      tmpfs   defaults,size=$RAMSIZE    0    0
+# end of optimizations
+EOF
+
+sudo chmod 644 /etc/fstab
+sudo apt clean
+sudo rm -rf /tmp/* /var/log/* /var/cache/apt/archives/* /home/$USER/.cache/*
+
+info "Firefox cache in RAM"
+
+for prefs in $(ls ~/.mozilla/firefox/*/prefs.js)
+do
+	echo "user_pref(\"browser.cache.disk.parent_directory\", \"/tmp\");" >> $prefs
+done
+
+info "RAM disk compression"
+
+# https://wiki.debian.org/ZRam
+sudo tee /etc/init.d/zram >/dev/null <<\EOF
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          zram
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     S
+# Default-Stop:      0 1 6
+# Short-Description: Use compressed RAM as in-memory swap
+# Description:       Use compressed RAM as in-memory swap
+### END INIT INFO
+
+# Author: Antonio Galea <antonio.galea@gmail.com>
+# Thanks to Przemysław Tomczyk for suggesting swapoff parallelization
+
+FRACTION=75
+
+MEMORY=`perl -ne'/^MemTotal:\s+(\d+)/ && print $1*1024;' < /proc/meminfo`
+CPUS=`grep -c processor /proc/cpuinfo`
+SIZE=$(( MEMORY * FRACTION / 100 / CPUS ))
+
+case "$1" in
+  "start")
+    param=`modinfo zram|grep num_devices|cut -f2 -d:|tr -d ' '`
+    modprobe zram $param=$CPUS
+    for n in `seq $CPUS`; do
+      i=$((n - 1))
+      echo $SIZE > /sys/block/zram$i/disksize
+      mkswap /dev/zram$i
+      swapon /dev/zram$i -p 10
+    done
+    # added by Christophe Delord
+    # some softs expect their directories to be created
+    if [ -d /var/log ] && ! [ -e /var/log/clamav/freshclam.log ]
+    then
+        mkdir -p /var/log/clamav/
+        touch /var/log/clamav/freshclam.log
+        chown clamav:adm /var/log/clamav/freshclam.log
+        chmod 755 /var/log/clamav/
+        chmod 640 /var/log/clamav/freshclam.log
+    fi
+    ;;
+  "stop")
+    for n in `seq $CPUS`; do
+      i=$((n - 1))
+      swapoff /dev/zram$i && echo "disabled disk $n of $CPUS" &
+    done
+    wait
+    sleep .5
+    modprobe -r zram
+    ;;
+  *)
+    echo "Usage: `basename $0` (start | stop)"
+    exit 1
+    ;;
+esac
+EOF
+sudo chmod +x /etc/init.d/zram
+sudo insserv zram
+
+info "Sudoers"
+
+sudo tee /etc/sudoers.d/sudogroup >/dev/null <<EOF
+# Created by CDTux
+
+%sudo    ALL=(root) ALL
+
+ALL   ALL=NOPASSWD:/sbin/shutdown
+ALL   ALL=NOPASSWD:/usr/sbin/s2ram
+ALL   ALL=NOPASSWD:/usr/sbin/s2disk
+ALL   ALL=NOPASSWD:/usr/sbin/s2both
+ALL   ALL=NOPASSWD:/usr/sbin/pm-hibernate
+ALL   ALL=NOPASSWD:/usr/sbin/pm-is-supported
+ALL   ALL=NOPASSWD:/usr/sbin/pm-powersave
+ALL   ALL=NOPASSWD:/usr/sbin/pm-suspend
+ALL   ALL=NOPASSWD:/usr/sbin/pm-suspend-hybrid
+ALL   ALL=NOPASSWD:/usr/sbin/iftop
+ALL   ALL=NOPASSWD:/bin/mount
+ALL   ALL=NOPASSWD:/bin/umount
+ALL   ALL=NOPASSWD:/sbin/ifup
+ALL   ALL=NOPASSWD:/sbin/ifdown
+ALL   ALL=NOPASSWD:/sbin/dhclient
+EOF
+sudo chmod 440 /etc/sudoers.d/sudogroup
+sudo addgroup $USER sudo
+sudo addgroup $USER kvm
+
+info "swappiness"
+
+if grep -q "vm\.swappiness" /etc/sysctl.conf
+then
+	sudo sed -i "s/.*vm\.swappiness.*/vm.swappiness=$SWAPPINESS/" /etc/sysctl.conf
+else
+	sudo sh -c "echo \"vm.swappiness=$SWAPPINESS\" >> /etc/sysctl.conf"
+fi
+sudo /sbin/sysctl -p
+
+info "Disable system beep"
+
+sudo modprobe -r pcspkr snd_pcsp
+sudo tee /etc/modprobe.d/nobeep.conf >/dev/null <<EOF
+blacklist pcspkr
+blacklist snd_pcsp
+EOF
+sudo sed -i 's/# set bell-style none/set bell-style none/' /etc/inputrc
+
+info "Fuse setup"
+
+sudo groupadd fuse
+sudo adduser $USER fuse
+
+if $INTEL
+then
+    info "Virtualbox shared directory"
+
+    rm -f ~/.profiled/vbox
+    for shared in $(sudo VBoxControl sharedfolder list | awk '$1~/[0-9]+/ $2=="-" {print $3}')
+    do
+        mkdir -p ~/$shared
+        cat <<EOF >> ~/.profiled/vbox
+sudo mount -t vboxsf -o uid=$UID,gid=$(id -g) $shared ~/$shared
+EOF
+        chmod +x ~/.profiled/vbox
+    done
+fi
+

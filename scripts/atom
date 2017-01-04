@@ -1,0 +1,23 @@
+#!/bin/bash
+
+. ./config
+$INTEL || exit
+./haskell
+./elixir
+
+title "Atom"
+
+INSTALL_FROM_REPOSITORY=true
+
+if $INSTALL_FROM_REPOSITORY
+then
+
+    sudo apt install atom
+
+else
+
+    ATOMDEB=https://github.com/atom/atom/releases/download/v1.12.7/atom-amd64.deb
+    get $ATOMDEB
+    sudo dpkg -E -i $CACHE/$(basename $ATOMDEB)
+
+fi

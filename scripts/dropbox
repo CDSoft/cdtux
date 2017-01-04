@@ -1,0 +1,28 @@
+#!/bin/bash
+
+. ./config
+$INTEL || exit
+
+title "Dropbox"
+
+DROPBOXINSTALL=https://www.dropbox.com/download?plat=lnx.x86_64
+
+if ! $DROPBOX
+then
+    rm -rf ~/.dropbox-dist ~/.profiled/dropbox.rc
+else
+
+    ! [ $FORCE ] && [ -x ~/.dropbox-dist/dropboxd ] && exit
+
+    sudo apt update
+    sudo apt install python-qt4
+
+    cd ~
+    rm -rf ~/.dropbox-dist
+    wget -O - "$DROPBOXINSTALL" | tar xzf -
+
+    cat <<EOF > ~/.profiled/dropbox.rc
+~/.dropbox-dist/dropboxd &
+EOF
+
+fi

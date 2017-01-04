@@ -1,0 +1,11 @@
+#!/bin/bash
+
+. ./config
+
+title "System packages"
+
+sudo apt update
+sudo apt install \
+	tmux \
+
+# TODO: tmux configuration

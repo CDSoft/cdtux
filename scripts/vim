@@ -1,0 +1,197 @@
+#!/bin/bash
+
+. ./config
+
+title "vim"
+
+sudo apt update
+sudo apt install \
+	vim-gtk \
+
+    #vim-syntastic \
+    #vim-voom
+
+cat <<\EOF > ~/.vimrc
+" Vim configuration
+
+" Startup {{{
+set nocompatible " use vim power
+set loadplugins
+filetype plugin on
+filetype indent on
+filetype on
+" }}}
+
+" File encryption {{{
+set cm=blowfish2
+" }}}
+
+" File types {{{
+au BufRead,BufNewFile *.md,*.i set filetype=markdown
+autocmd Filetype markdown setlocal spell
+autocmd Filetype markdown set spelllang=en,fr
+
+au BufRead,BufNewFile *.pl set filetype=prolog
+" }}}
+
+" Keyboard {{{
+let mapleader = "²"
+let g:mapleader = "²"
+" }}}
+
+" Automatic layout {{{
+set autoindent
+set backspace=indent,eol,start
+set expandtab
+set shiftround " round indent to multiple of shiftwidth
+set shiftwidth=4
+set smartindent
+set smarttab
+set softtabstop=4
+set tabstop=4
+" }}}
+
+" Selection {{{
+"set clipboard=autoselect
+"set mouse=a
+" }}}
+
+" Search {{{
+set hlsearch
+" set ignorecase
+set incsearch
+set infercase " when ignorecase, the completion also modifies the case
+set magic
+set showmatch
+" set smartcase
+" }}}
+
+" Display {{{
+syntax enable
+set background=light
+colorscheme zellner
+set antialias
+" show the current line and column in the current window
+"au WinLeave * set nocursorline nocursorcolumn
+"au WinEnter * set cursorline cursorcolumn
+set noequalalways " do not resize other windows when splitting
+"set foldcolumn=3
+"set foldenable
+"set foldmethod=syntax
+set guifont=Monospace\ 8
+set guioptions+=a " autoselect
+set guioptions-=m " no menu bar
+set guioptions+=t " tearoff menu items
+set guioptions-=T " no tool bar
+set guioptions+=r " right-hand scrollbar
+set guioptions+=L " left-hand scrollbar is vertical split
+set guioptions+=b " bottom scrollbar
+set laststatus=2
+set number
+set numberwidth=4
+set ruler
+set showcmd
+set suffixes+=.pyc
+set visualbell
+set wildignore=*.o,*~,*.pyc,*.bak
+set wildmenu
+set wildmode=full
+set nowrap
+" }}}
+
+" Netrw {{{
+let g:netrw_liststyle= 4 " tree style
+" }}}
+
+" Directories {{{
+set autochdir " the current directory is the directory of the current file
+set browsedir=buffer " browse the directory of the buffer
+" }}}
+
+" Files {{{
+set nobomb " add a BOM when writing a UTF-8 file
+set encoding=utf-8
+set fileencoding=utf-8
+set fsync
+" }}}
+
+" Make {{{
+set makeprg=make " '%' '#' : current and alternate file name
+" }}}
+
+" Vimgrep {{{
+
+" Search the word under the cursor in all files
+map <F4> :execute "vimgrep /" . expand("<cword>") . "/j ../**" <Bar> cw<CR>
+
+" When you press gv you vimgrep after the selected text
+vnoremap <silent> gv :call VisualSelection('gv')<CR>
+
+" Open vimgrep and put the cursor in the right position
+map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+
+" Vimgreps in the current file
+map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
+
+" When you press <leader>r you can search and replace the selected text
+vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
+
+" Do :help cope if you are unsure what cope is. It's super useful!
+"
+" When you search with vimgrep, display your results in cope by doing:
+"   <leader>cc
+"
+" To go to the next search result do:
+"   <leader>n
+"
+" To go to the previous search results do:
+"   <leader>p
+"
+map <leader>cc :botright cope<cr>
+map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+map <leader>n :cn<cr>
+map <leader>p :cp<cr>
+
+function! CmdLine(str)
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
+endfunction
+
+
+function! VisualSelection(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+" }}}
+
+" HTML export {{{
+let g:html_number_lines = 0
+" }}}
+
+" vim: set ts=4 sw=4 foldmethod=marker :
+EOF
+
+mkdir -p ~/.vim
+cd $CACHE
+get http://cdsoft.fr/todo/todo.tgz
+tar xzf todo.tgz -C ~/.vim/
+get http://cdsoft.fr/pwd/pwd.tgz
+tar xzf pwd.tgz -C ~/.vim/

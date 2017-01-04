@@ -1,0 +1,71 @@
+#!/bin/bash
+
+. ./config
+./shell
+./prog
+
+title "Haskell"
+
+INSTALL_FROM_REPOSITORY=true
+
+# Latest Haskell version for Intel
+
+if $INTEL && ! $INSTALL_FROM_REPOSITORY
+then
+
+    VERSION=8.0.1
+    HASKELL_PLATFORM=https://haskell.org/platform/download/$VERSION/haskell-platform-$VERSION-unknown-posix--full-x86_64.tar.gz
+
+    if [ $FORCE ] || [ "$(ghc --version | awk '{print $8}')" != $VERSION ]
+    then
+        get $HASKELL_PLATFORM
+        cd $CACHE
+        tar xf `basename $HASKELL_PLATFORM`
+        sudo ./install-haskell-platform.sh
+    fi
+
+    cabal update
+
+    # http://stackoverflow.com/questions/39112219/ghc-8-0-cabal-build-error-ld-r-and-pie-may-not-be-used-together-known
+    if [ $GCCVERSION -gt 60000 ]
+    then
+        #sed -i 's/.*ghc-options:.*/  ghc-options: -dynamic -optl-no-pie/' ~/.cabal/config
+        sed -i 's/.*ghc-options:.*/  ghc-options: -optl-no-pie/' ~/.cabal/config
+        #cabal -v --ghc-option="-optl-no-pie" install cabal-install
+    fi
+
+fi
+
+# Default version on Raspberry Pi
+
+if $RPI || ( $INTEL && $INSTALL_FROM_REPOSITORY )
+then
+
+    sudo apt install haskell-platform haskell-stack
+
+    cabal update
+
+fi
+
+# Useful packages
+
+$INTEL && cabal install \
+    split \
+    missingh \
+    network-multicast \
+    base-unicode-symbols \
+    utf8-string \
+    interpolatedstring-perl6 shakespeare-text here \
+    parallel \
+    strict temporary \
+    hlint ghc-mod \
+    hoogle \
+
+# non working ???
+# readline \
+# glut \
+
+mkdir -p ~/.profiled
+cat <<\EOF > ~/.profiled/cabal.rc
+export PATH=~/.cabal/bin:$PATH
+EOF

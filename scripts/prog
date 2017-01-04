@@ -1,0 +1,38 @@
+#!/bin/bash
+
+. ./config
+
+title "Programming languages"
+
+sudo apt update
+
+$INTEL && sudo apt install \
+    git git-core git-gui gitk \
+    python python-tk python-docutils \
+    python3 python3-tk python3-docutils \
+    mingw-w64 \
+    clang llvm \
+    libreadline-dev \
+    gcc-multilib g++-multilib automake \
+    swi-prolog \
+    libgc-dev libz-dev zlib1g-dev \
+    rlwrap \
+    ncurses-dev \
+    meld \
+    libgmp-dev \
+    libreadline7 \
+
+$RPI && sudo apt install \
+    git git-core \
+    python \
+    python3 \
+    clang llvm \
+    libreadline-dev \
+    gcc-multilib g++-multilib automake \
+    swi-prolog \
+    libgc-dev libz-dev zlib1g-dev \
+    rlwrap \
+    ncurses-dev \
+    libgmp-dev \
+    libreadline7 \
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+. ./config
+$INTEL || exit
+./haskell
+
+title "hCalc"
+
+cd $CACHE
+if cd hcalc 2>/dev/null
+then
+	git pull
+else
+	git clone http://github.com/cdsoft/hcalc
+	cd hcalc
+fi
+cabal install here
+make bin/hcalc
+install bin/hcalc ~/bin

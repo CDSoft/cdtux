@@ -1,0 +1,75 @@
+#!/bin/bash
+
+. ./config
+
+title "Network configuration"
+
+# Hostname
+
+sudo hostname $CDTUX_HOSTNAME
+sudo sh -c "echo $CDTUX_HOSTNAME > /etc/hostname"
+
+# Other hostnames
+
+(   sudo sed -e "s/\(127.0.1.1[\s\t]\).*/\1$CDTUX_HOSTNAME/" -e '/# CDTux/,/# \/CDTux/d' /etc/hosts 
+    echo ""
+    echo "# CDTux configuration"
+    for nameip in ${CDTUX_HOSTS[@]}
+    do
+        name=$(echo $nameip | awk -F "=" '{print $1}' | tr "A-Z" "a-z")
+        ip=$(echo $nameip | awk -F "=" '{print $2}')
+        echo "${ip} ${name}"
+    done
+    echo "# /CDTux"
+) | sed '/^$/N;/^\n$/D' > /tmp/hosts
+sudo cp /tmp/hosts /etc/hosts
+sudo chmod 644 /etc/hosts
+
+# Wifi
+
+if [ -f /etc/wpa_supplicant/wpa_supplicant.conf ]
+then
+    (   sudo sed -e '/# CDTux/,/# \/CDTux/d' /etc/wpa_supplicant/wpa_supplicant.conf
+        echo ""
+        echo "# CDTux configuration"
+        for config in ${CDTUX_SSIDS[@]}
+        do
+            ssid=$(echo $config | awk -F "/" '{print $1}')
+            psk=$(echo $config | awk -F "/" '{print $2}')
+cat <<EOF
+
+network = {
+    ssid="$ssid"
+    psk="$psk"
+}
+
+EOF
+        done
+        echo "# /CDTux"
+    ) | sed '/^$/N;/^\n$/D' > /tmp/wpa_supplicant.conf
+    sudo cp /tmp/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+    sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant.conf
+fi
+
+# Auto FS mount points
+
+sudo rm -f /etc/auto.master /etc/auto*.nfs
+
+sudo sh -c "echo '+auto.master' > /etc/auto.master"
+
+i=0
+for config in ${CDTUX_AUTOFS[@]}
+do
+    i=$((i+1))
+    IFS=';' read -a mountpoints <<< "$config"
+    mountpoint=${mountpoints[0]}
+    info "mountpoint = $mountpoint"
+    sudo sh -c "echo '$mountpoint /etc/auto$i.nfs --ghost,--timeout=60' >> /etc/auto.master"
+    for mountpoint in ${mountpoints[@]:1}
+    do
+        IFS='=' read -a mountpoint <<< "$mountpoint"
+        info "${mountpoint[0]} -> ${mountpoint[1]}"
+        sudo sh -c "echo '${mountpoint[0]} -fstype=nfs,rw,intr ${mountpoint[1]}' >> /etc/auto$i.nfs"
+    done
+done
+

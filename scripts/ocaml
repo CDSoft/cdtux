@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. ./config
+
+title "OCaml"
+
+sudo apt update
+sudo apt install ocaml
+

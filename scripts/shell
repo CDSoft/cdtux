@@ -1,0 +1,89 @@
+#!/bin/bash
+
+. ./config
+
+title "Shell configuration"
+
+cat <<\EOF > ~/.bash_aliases
+alias ll='ls -l'
+alias la='ll -A'
+alias l='ls -CF'
+alias lt='ll -rt'
+
+alias vi=gvim
+alias v=gview
+alias more=less
+alias cmore='vim -u /usr/share/vim/vim74/macros/less.vim'
+alias df='df -h'
+alias du='du -h'
+
+alias ocaml="rlwrap ocaml"
+
+if [ $VIM ]
+then
+
+export PS1='[vim shell] \u@\h \w
+$ '
+
+else
+
+# Nice colored prompt
+export PS1='\[\033]0;\w\007
+\033[34m\]\u@\h \[\033[31m\w\033[0m\]
+$ '
+
+# Prompt with the colored return code of the previous command
+export PS1="\033[1;30m\$(r=\$?; printf \"%\$((\$(tput cols)-10))s\" | tr ' ' '-'; printf \"> %3s \" \$r; if [[ \$r == 0 ]]; then echo \"\[\033[1;32m\];)\"; else echo \"\[\033[1;31m\];(\"; fi)\[\033[00m\] $PS1"
+
+fi
+
+export EDITOR=gvim
+export TERMINAL=urxvt
+export BROWSER=firefox
+EOF
+
+cat <<EOF > ~/.profile
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+$( [ $http_proxy ] && cat <<END_OF_PROXY
+export http_proxy=$http_proxy
+export https_proxy=$https_proxy
+export ftp_proxy=$ftp_proxy
+END_OF_PROXY
+)
+
+export LC_NUMERIC=C
+
+# if running bash
+if [ -n "\$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "\$HOME/.bashrc" ]; then
+        . "\$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's bin if it exists
+if [ -d "\$HOME/bin" ] ; then
+    PATH="\$HOME/bin:\$PATH"
+fi
+if [ -d "\$HOME/local/bin" ] ; then
+    PATH="\$HOME/local/bin:\$PATH"
+fi
+export PATH=\$PATH:.
+
+if [ -d "\$HOME/.profiled" ]
+then
+    for profile in \$HOME/.profiled/*
+    do
+        source \$profile
+    done
+fi
+EOF

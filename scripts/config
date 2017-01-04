@@ -1,0 +1,127 @@
+#!/bin/bash
+
+if [ -z "$CDTUXDEPS" ]
+then
+	# Main process
+	# Initialize the dependancy manager
+	# and clean it when exiting
+
+	export CDTUXDEPS=/tmp/cdtux-deps
+	rm -rf $CDTUXDEPS
+	touch $CDTUXDEPS
+	trap "rm -rf $CDTUXDEPS" EXIT 2 3 9 15
+    UPDATE_TUXRC=true
+else
+    UPDATE_TUXRC=false
+fi
+
+title()
+{
+    echo -e "\e[91m########################################\e[0m"
+    echo -e "\e[91m# $*\e[0m"
+    echo -e "\e[91m########################################\e[0m"
+}
+
+info()
+{
+    echo -e "\e[91m# $*\e[0m"
+}
+
+CACHE=~/.cdtux
+mkdir -p $CACHE
+
+get()
+{
+	URL=$1
+	NAME=$(basename $URL)
+	DST=$CACHE/$NAME
+	test -f $DST || wget $URL -O $DST
+	test -s $DST || rm $DST
+}
+
+# Check that this script has not been executed yet
+NAME=$(basename $0)
+if grep -q "^$NAME\$" $CDTUXDEPS
+then
+	# already done
+	exit 0
+else
+	# first execution
+	echo $NAME >> $CDTUXDEPS
+fi
+
+# Read the configuration
+
+CDTUXRC=~/.cdtuxrc
+
+# Default configuration
+
+CDTUX_HOSTNAME=$(uname -n)
+CDTUX_HOSTS=( )
+CDTUX_SSIDS=( )
+CDTUX_AUTOFS=( )
+
+DROPBOX=false
+
+# User configuration
+
+[ -f $CDTUXRC ] && . $CDTUXRC
+
+array()
+{
+    while [ $1 ]
+    do
+        echo "  $1"
+        shift
+    done
+}
+
+qarray()
+{
+    while [ $1 ]
+    do
+        echo "  '$1'"
+        shift
+    done
+}
+
+$UPDATE_TUXRC && cat <<EOF > $CDTUXRC
+# CDTux configuration file
+
+# Local host name
+CDTUX_HOSTNAME=$CDTUX_HOSTNAME
+
+# Other hosts names
+CDTUX_HOSTS=( # name=IP
+$(array ${CDTUX_HOSTS[@]})
+)
+
+# SSIDs
+CDTUX_SSIDS=( # SSID/PSK
+$(array ${CDTUX_SSIDS[@]})
+)
+
+# Proxy
+http_proxy=$http_proxy
+https_proxy=$https_proxy
+ftp_proxy=$ftp_proxy
+
+# Auto FS
+CDTUX_AUTOFS=( # mount_point;name1=nfs_path1;name2=nfs_path2;...
+$(qarray ${CDTUX_AUTOFS[@]})
+)
+
+# optional softwares
+DROPBOX=$DROPBOX
+
+EOF
+
+# OS detection (Ubuntu or Raspbian)
+INTEL=false
+RPI=false
+case "$(uname -s -m)" in
+    "Linux x86_64")     INTEL=true;;
+    "Linux armv7l")     RPI=true;;
+    *)                  error "Unhandled platform: $(uname -s -m)";;
+esac
+GCCVERSION=$(gcc -dumpversion | awk -F "." '{print $1*10000+$2*100+$3}')
