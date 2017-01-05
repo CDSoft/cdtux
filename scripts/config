@@ -1,15 +1,19 @@
 #!/bin/bash
 
+CACHE=~/.cdtux
+mkdir -p $CACHE
+
 if [ -z "$CDTUXDEPS" ]
 then
-	# Main process
-	# Initialize the dependancy manager
-	# and clean it when exiting
+    # Main process
+    # Initialize the dependancy manager
+    # and clean it when exiting
 
-	export CDTUXDEPS=/tmp/cdtux-deps
-	rm -rf $CDTUXDEPS
-	touch $CDTUXDEPS
-	trap "rm -rf $CDTUXDEPS" EXIT 2 3 9 15
+    export CDTUXDEPS=$CACHE/tmp/cdtux-deps
+    mkdir -p $(dirname $CDTUXDEPS)
+    rm -rf $CDTUXDEPS
+    touch $CDTUXDEPS
+    trap "rm -rf $CDTUXDEPS" EXIT 2 3 9 15
     UPDATE_TUXRC=true
 else
     UPDATE_TUXRC=false
@@ -27,27 +31,24 @@ info()
     echo -e "\e[91m# $*\e[0m"
 }
 
-CACHE=~/.cdtux
-mkdir -p $CACHE
-
 get()
 {
-	URL=$1
-	NAME=$(basename $URL)
-	DST=$CACHE/$NAME
-	test -f $DST || wget $URL -O $DST
-	test -s $DST || rm $DST
+    URL=$1
+    NAME=$(basename $URL)
+    DST=$CACHE/$NAME
+    test -f $DST || wget $URL -O $DST
+    test -s $DST || rm $DST
 }
 
 # Check that this script has not been executed yet
 NAME=$(basename $0)
 if grep -q "^$NAME\$" $CDTUXDEPS
 then
-	# already done
-	exit 0
+    # already done
+    exit 0
 else
-	# first execution
-	echo $NAME >> $CDTUXDEPS
+    # first execution
+    echo $NAME >> $CDTUXDEPS
 fi
 
 # Read the configuration
