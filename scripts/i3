@@ -345,8 +345,8 @@ general {
 #order += "run_watch DHCP"
 #order += "run_watch VPNC"
 #order += "path_exists VPN"
-$( [ -n "$wlan" ] || echo "#" )order += "wireless $wlan"
-$( [ -n "$eth"  ] || echo "#" )order += "ethernet $eth"
+$( [ -n "$wlan" ] || echo "#" )order += "wireless ${wlan:-wlan0}"
+$( [ -n "$eth"  ] || echo "#" )order += "ethernet ${eth:-eth0}"
 order += "battery 0"
 #order += "cpu_temperature 0"
 order += "cpu_usage"
@@ -355,12 +355,12 @@ order += "load"
 order += "time"
 #order += "tztime paris"
 
-wireless $wlan {
+wireless ${wlan:-wlan0} {
     format_up = "W: (%quality at %essid, %bitrate) %ip"
     #format_down = "W: down"
 }
 
-ethernet $eth {
+ethernet ${eth:-eth0} {
     # if you use %speed, i3status requires the cap_net_admin capability
     #format_up = "E: %ip (%speed)"
     format_up = "E: %ip"
