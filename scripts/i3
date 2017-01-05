@@ -329,7 +329,10 @@ esac
 EOF
 chmod +x ~/bin/brightness
 
-cat <<\EOF > ~/.config/i3/status
+eth=$(ifconfig -s | awk '$1 ~ /^e/ { print $1; exit }')
+wlan=$(ifconfig -s | awk '$1 ~ /^w/ { print $1; exit }')
+
+cat <<EOF > ~/.config/i3/status
 general {
     output_format = "i3bar"
     colors = true
@@ -342,8 +345,8 @@ general {
 #order += "run_watch DHCP"
 #order += "run_watch VPNC"
 #order += "path_exists VPN"
-order += "wireless wlan0"
-order += "ethernet eth0"
+$( [ -n "$wlan" ] || echo "#" )order += "wireless $wlan"
+$( [ -n "$eth"  ] || echo "#" )order += "ethernet $eth"
 order += "battery 0"
 #order += "cpu_temperature 0"
 order += "cpu_usage"
@@ -352,12 +355,12 @@ order += "load"
 order += "time"
 #order += "tztime paris"
 
-wireless wlan0 {
+wireless $wlan {
     format_up = "W: (%quality at %essid, %bitrate) %ip"
     #format_down = "W: down"
 }
 
-ethernet eth0 {
+ethernet $eth {
     # if you use %speed, i3status requires the cap_net_admin capability
     #format_up = "E: %ip (%speed)"
     format_up = "E: %ip"
