@@ -28,6 +28,7 @@ $INTEL && sudo apt install \
     qemu-system qemu-kvm virtualbox \
     nfs-common autofs5 gvfs-bin \
     exfat-fuse \
+    encfs \
     dialog \
     openssh-client openssh-server \
     rxvt-unicode-256color \
@@ -45,6 +46,7 @@ $INTEL && sudo apt install \
 $RPI && sudo apt install \
     bash htop \
     nfs-common autofs5 gvfs-bin \
+    encfs \
     dialog \
     openssh-client openssh-server \
     rxvt-unicode-256color \
