@@ -7,7 +7,7 @@ $INTEL || exit
 
 title "Atom"
 
-INSTALL_FROM_REPOSITORY=true
+INSTALL_FROM_REPOSITORY=false
 
 if $INSTALL_FROM_REPOSITORY
 then
