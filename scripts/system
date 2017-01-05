@@ -24,34 +24,34 @@ ARCHIVE_SIZE=$(sudo du -m /var/cache/apt/archives | tail -1 | awk '{print $1}')
 sudo apt update
 sudo apt autoclean
 $INTEL && sudo apt install \
-	bash htop \
-	qemu-system qemu-kvm virtualbox \
-	nfs-common autofs5 gvfs-bin \
-	exfat-fuse \
-	dialog \
-	openssh-client openssh-server \
-	rxvt-unicode-256color \
-	numlockx \
-	scrot feh gimp imagemagick scribus inkscape \
-	p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
-	evince wkhtmltopdf \
-	libreoffice \
-	volumeicon-alsa pavucontrol \
-	wget wput curl gftp \
-	thunderbird \
-	firefox \
-	mc doublecmd-qt doublecmd-help-en \
+    bash htop \
+    qemu-system qemu-kvm virtualbox \
+    nfs-common autofs5 gvfs-bin \
+    exfat-fuse \
+    dialog \
+    openssh-client openssh-server \
+    rxvt-unicode-256color \
+    numlockx \
+    scrot feh gimp imagemagick scribus inkscape \
+    p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+    evince wkhtmltopdf \
+    libreoffice \
+    volumeicon-alsa pavucontrol \
+    wget wput curl gftp \
+    thunderbird \
+    firefox \
+    mc doublecmd-qt doublecmd-help-en \
 
 $RPI && sudo apt install \
-	bash htop \
-	nfs-common autofs5 gvfs-bin \
-	dialog \
-	openssh-client openssh-server \
-	rxvt-unicode-256color \
-	numlockx \
-	p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
-	wget wput curl \
-	mc
+    bash htop \
+    nfs-common autofs5 gvfs-bin \
+    dialog \
+    openssh-client openssh-server \
+    rxvt-unicode-256color \
+    numlockx \
+    p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+    wget wput curl \
+    mc
 
 sudo apt full-upgrade
 
@@ -63,9 +63,9 @@ sudo sed -i '/# SSD optimizations/,/# end of optimizations/d' /etc/fstab
 [ -e /etc/fstab.orig ] || sudo cp /etc/fstab /etc/fstab.orig
 if ! grep -q 'noatime,discard' /etc/fstab
 then
-	sudo sed -i 's#\( /  *ext4  *\)#\1noatime,discard,#' /etc/fstab
-	sudo sed -i 's#\( /home  *ext4  *\)#\1noatime,discard,#' /etc/fstab
-	sudo sed -i 's#\( /boot  *ext2  *\)#\1noatime,discard,#' /etc/fstab
+    sudo sed -i 's#\( /  *ext4  *\)#\1noatime,discard,#' /etc/fstab
+    sudo sed -i 's#\( /home  *ext4  *\)#\1noatime,discard,#' /etc/fstab
+    sudo sed -i 's#\( /boot  *ext2  *\)#\1noatime,discard,#' /etc/fstab
 fi
 
 info "Temporary directory to RAM"
@@ -89,7 +89,7 @@ info "Firefox cache in RAM"
 
 for prefs in $(ls ~/.mozilla/firefox/*/prefs.js)
 do
-	echo "user_pref(\"browser.cache.disk.parent_directory\", \"/tmp\");" >> $prefs
+    echo "user_pref(\"browser.cache.disk.parent_directory\", \"/tmp\");" >> $prefs
 done
 
 info "RAM disk compression"
@@ -186,9 +186,9 @@ info "swappiness"
 
 if grep -q "vm\.swappiness" /etc/sysctl.conf
 then
-	sudo sed -i "s/.*vm\.swappiness.*/vm.swappiness=$SWAPPINESS/" /etc/sysctl.conf
+    sudo sed -i "s/.*vm\.swappiness.*/vm.swappiness=$SWAPPINESS/" /etc/sysctl.conf
 else
-	sudo sh -c "echo \"vm.swappiness=$SWAPPINESS\" >> /etc/sysctl.conf"
+    sudo sh -c "echo \"vm.swappiness=$SWAPPINESS\" >> /etc/sysctl.conf"
 fi
 sudo /sbin/sysctl -p
 

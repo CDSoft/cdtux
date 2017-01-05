@@ -6,6 +6,6 @@ title "System packages"
 
 sudo apt update
 sudo apt install \
-	tmux \
+    tmux \
 
 # TODO: tmux configuration

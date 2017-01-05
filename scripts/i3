@@ -8,10 +8,10 @@ title "i3 window manager"
 
 sudo apt update
 sudo apt install \
-	i3 \
-	dunst \
-	i3lock \
-	suckless-tools surf \
+    i3 \
+    dunst \
+    i3lock \
+    suckless-tools surf \
 
 mkdir -p ~/.config/i3
 cat <<\EOF > ~/.config/i3/config
@@ -284,10 +284,10 @@ EOF
 
 if ! which xcwd > /dev/null
 then
-	cd $CACHE
-	git clone https://github.com/schischi-a/xcwd.git
-	cd xcwd
-	make && sudo make install
+    cd $CACHE
+    git clone https://github.com/schischi-a/xcwd.git
+    cd xcwd
+    make && sudo make install
 fi
 
 mkdir -p ~/bin

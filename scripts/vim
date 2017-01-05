@@ -6,7 +6,7 @@ title "vim"
 
 sudo apt update
 sudo apt install \
-	vim-gtk \
+    vim-gtk \
 
     #vim-syntastic \
     #vim-voom
