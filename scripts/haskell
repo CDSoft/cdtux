@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . ./config
+$INTEL || exit
 ./shell
 ./prog
 
@@ -36,7 +37,7 @@ then
 
 fi
 
-# Default version on Raspberry Pi
+# Default version on Raspberry Pi (not available) or Intel
 
 if $RPI || ( $INTEL && $INSTALL_FROM_REPOSITORY )
 then

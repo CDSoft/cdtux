@@ -34,7 +34,7 @@ $INTEL && sudo apt install \
     rxvt-unicode-256color \
     numlockx \
     scrot feh gimp imagemagick scribus inkscape \
-    p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+    p7zip p7zip-full p7zip-rar unrar xz-utils bzip2 \
     evince wkhtmltopdf \
     libreoffice \
     volumeicon-alsa pavucontrol \
@@ -51,7 +51,7 @@ $RPI && sudo apt install \
     openssh-client openssh-server \
     rxvt-unicode-256color \
     numlockx \
-    p7zip p7zip-full p7zip-rar unrar upx xz-utils bzip2 \
+    p7zip p7zip-full xz-utils bzip2 \
     wget wput curl \
     mc
 
@@ -182,7 +182,7 @@ ALL   ALL=NOPASSWD:/sbin/dhclient
 EOF
 sudo chmod 440 /etc/sudoers.d/sudogroup
 sudo addgroup $USER sudo
-sudo addgroup $USER kvm
+$INTEL && sudo addgroup $USER kvm
 
 info "swappiness"
 

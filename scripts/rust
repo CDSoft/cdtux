@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . ./config
+$INTEL || exit
 
 title "Rust"
 

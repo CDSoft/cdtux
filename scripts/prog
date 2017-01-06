@@ -28,11 +28,11 @@ $RPI && sudo apt install \
     python3 \
     clang llvm \
     libreadline-dev \
-    gcc-multilib g++-multilib automake \
+    automake \
     swi-prolog \
     libgc-dev libz-dev zlib1g-dev \
     rlwrap \
     ncurses-dev \
     libgmp-dev \
-    libreadline7 \
+    libreadline6 \
 

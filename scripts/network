@@ -27,6 +27,14 @@ sudo chmod 644 /etc/hosts
 
 # Wifi
 
+# http://www.framboise314.fr/le-wifi-avec-jessie-en-ligne-de-commande/
+if [ -f /etc/network/interfaces ]
+then
+    awk '$1 == "allow-hotplug" {print "auto " $2} {print}' /etc/network/interfaces | awk '!a[$0]++' > /tmp/interfaces
+    sudo mv /tmp/interfaces /etc/network/interfaces
+    sudo chmod 644 /etc/network/interfaces
+fi
+
 if [ -f /etc/wpa_supplicant/wpa_supplicant.conf ]
 then
     (   sudo sed -e '/# CDTux/,/# \/CDTux/d' /etc/wpa_supplicant/wpa_supplicant.conf
@@ -38,7 +46,7 @@ then
             psk=$(echo $config | awk -F "/" '{print $2}')
 cat <<EOF
 
-network = {
+network={
     ssid="$ssid"
     psk="$psk"
 }
