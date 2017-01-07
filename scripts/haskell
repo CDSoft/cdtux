@@ -61,6 +61,7 @@ $INTEL && cabal install \
     strict temporary \
     hlint ghc-mod \
     hoogle \
+    readline \
 
 # non working ???
 # readline \
