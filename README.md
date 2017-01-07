@@ -71,11 +71,13 @@ you can try my [CDKey] script to build a bootable key.
 
 This may be a little bit trickier.
 I describe here a way to install and configure [Raspbian]
-without any keyboard or screen connected to the Raspberr Pi.
+without any keyboard or screen connected to the Raspberry Pi.
 You will need an other computer to connect to the Raspberry Pi with `ssh`.
 If you have a screen and a keyboard it should be easier.
 
-#### Download and extract [Raspbian]. The lite version is enought for me.
+#### Download and extract [Raspbian].
+
+The lite version is enough for me.
 
 ~~~~~~~~~~ sh
 wget https://downloads.raspberrypi.org/raspbian_lite_latest
@@ -119,7 +121,7 @@ Your home network is probably configured to give IP addresses
 in a classical subnetwork (`192.168.0.0/24`).
 
 You can use `nmap` (*on your desktop or laptop*)
-to discover the Rasperry Pi IP address:
+to discover the Raspberry Pi IP address:
 
 ~~~~~~~~~~ sh
 sudo apt install nmap
@@ -159,7 +161,7 @@ cd cdtux
 ./cdtux
 ~~~~~~~~~~
 
-You will have sometimes to provide your password to gain `root` priviledges.
+You will have sometimes to provide your password to gain `root` privileges.
 
 ### Some specificities for Raspbian on Raspberry Pi
 
