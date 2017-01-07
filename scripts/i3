@@ -14,7 +14,7 @@ sudo apt install \
     suckless-tools surf \
 
 mkdir -p ~/.config/i3
-cat <<\EOF > ~/.config/i3/config
+cat <<EOF > ~/.config/i3/config
 # i3 config file (v4)
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
@@ -31,10 +31,10 @@ client.unfocused        #737373 #222222 #888888 #292d2e
 client.urgent           #2f343a #900000 #ffffff #900000
 client.background       #000000
 
-set $alt Mod1
-set $ctrl Control
-set $win Mod4
-set $mod Mod4
+set \$alt Mod1
+set \$ctrl Control
+set \$win Mod4
+set \$mod Mod4
 
 # Volume control
 bindsym XF86AudioRaiseVolume exec "amixer set Master 500+"
@@ -59,170 +59,170 @@ font pango:DejaVu Sans Mono 8
 # X core fonts rendering does not support right-to-left and this being a bitmap
 # font, it doesn’t scale on retina/hidpi displays.
 
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+# Use Mouse+\$mod to drag floating windows to their wanted position
+floating_modifier \$mod
 
 # start a terminal
-#bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec urxvt -cd "`xcwd`"
+#bindsym \$mod+Return exec i3-sensible-terminal
+bindsym \$mod+Return exec urxvt -cd "`xcwd`"
 
 # Filemanagers
-bindsym $mod+Ctrl+Return exec doublecmd "`xcwd`" "`xcwd`"
-bindsym $mod+$alt+Return exec fmmenu
+bindsym \$mod+Ctrl+Return exec doublecmd "`xcwd`" "`xcwd`"
+bindsym \$mod+\$alt+Return exec fmmenu
 
 # scratchpad
-bindsym $mod+Shift+o    move scratchpad
-bindsym $mod+o          scratchpad show
+bindsym \$mod+Shift+o    move scratchpad
+bindsym \$mod+o          scratchpad show
 
 # some useful shortcuts
 
-bindsym $mod+w                  exec firefox
-bindsym $mod+t                  exec gvim ~/todo.txt
-bindsym $mod+n                  exec gvim ~/notes.txt
-bindsym $mod+p                  exec [ -e ~/secret.pwd ] && gvim ~/secret.pwd || gvim -x ~/secret.pwd
-bindsym $mod+equal              exec urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
-bindsym $mod+c                  exec urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
-bindsym Print                   exec scrot '/tmp/%Y%m%d-%H%M%S.png' -e 'gimp $f'
-bindsym $win+Print              exec scrot '/tmp/%Y%m%d-%H%M%S.png' -b -u -e 'gimp $f'
+bindsym \$mod+w                  exec firefox
+bindsym \$mod+t                  exec gvim ~/todo.txt
+bindsym \$mod+n                  exec gvim ~/notes.txt
+bindsym \$mod+p                  exec [ -e ~/secret.pwd ] && gvim ~/secret.pwd || gvim -x ~/secret.pwd
+bindsym \$mod+equal              exec urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
+bindsym \$mod+c                  exec urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
+bindsym Print                   exec scrot '/tmp/%Y%m%d-%H%M%S.png' -e 'gimp \$f'
+bindsym \$win+Print              exec scrot '/tmp/%Y%m%d-%H%M%S.png' -b -u -e 'gimp \$f'
 
-bindsym $mod+Pause              exec sudo pm-hibernate
-bindsym $mod+Delete             exec urxvt -T Bye +sb -geometry 78x17 -rv -e ~/bin/bye
-bindsym $alt+$ctrl+Delete       exec urxvt -T Bye +sb -geometry 78x17 -rv -e ~/bin/bye
+bindsym \$mod+Pause              exec sudo pm-hibernate
+bindsym \$mod+Delete             exec urxvt -T Bye +sb -geometry 78x17 -rv -e ~/bin/bye
+bindsym \$alt+\$ctrl+Delete       exec urxvt -T Bye +sb -geometry 78x17 -rv -e ~/bin/bye
 
 # custom window settings
 for_window [window_role="pop-up"]                   floating enable
 for_window [window_role="task_dialog"]              floating enable
-for_window [title="^Bye$"]                          floating enable, border 1pixel
+for_window [title="^Bye\$"]                          floating enable, border 1pixel
 for_window [title="^QEMU"]                          floating enable
-for_window [title="^hCalc$"]                        floating enable
-for_window [class="^URxvt$" instance="scratchpad"]  border 1pixel; move scratchpad
+for_window [title="^hCalc\$"]                        floating enable
+for_window [class="^URxvt\$" instance="scratchpad"]  border 1pixel; move scratchpad
 for_window [title="% Copying"]                      floating enable
 for_window [title="% Moving"]                       floating enable
 for_window [title="% Extracting"]                   floating enable
 for_window [title="Contrôle du volume"]             floating enable
 
 # kill focused window
-bindsym $mod+q          kill
-bindsym $alt+F4         kill
+bindsym \$mod+q          kill
+bindsym \$alt+F4         kill
 
 # start dmenu (a program launcher)
-bindsym $mod+Escape  exec dmenu_run
+bindsym \$mod+Escape  exec dmenu_run
 
 # change focus
-#bindsym $mod+j focus left
-#bindsym $mod+k focus down
-#bindsym $mod+l focus up
-#bindsym $mod+m focus right
+#bindsym \$mod+j focus left
+#bindsym \$mod+k focus down
+#bindsym \$mod+l focus up
+#bindsym \$mod+m focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym \$mod+Left focus left
+bindsym \$mod+Down focus down
+bindsym \$mod+Up focus up
+bindsym \$mod+Right focus right
 
 # move focused window
-#bindsym $mod+Shift+j move left
-#bindsym $mod+Shift+k move down
-#bindsym $mod+Shift+l move up
-#bindsym $mod+Shift+m move right
+#bindsym \$mod+Shift+j move left
+#bindsym \$mod+Shift+k move down
+#bindsym \$mod+Shift+l move up
+#bindsym \$mod+Shift+m move right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym \$mod+Shift+Left move left
+bindsym \$mod+Shift+Down move down
+bindsym \$mod+Shift+Up move up
+bindsym \$mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
-#bindsym $mod+Control+Left   split h
-#bindsym $mod+Control+Right  split h
+bindsym \$mod+h split h
+#bindsym \$mod+Control+Left   split h
+#bindsym \$mod+Control+Right  split h
 
 # split in vertical orientation
-bindsym $mod+v split v
-#bindsym $mod+Control+Up     split v
-#bindsym $mod+Control+Down   split v
+bindsym \$mod+v split v
+#bindsym \$mod+Control+Up     split v
+#bindsym \$mod+Control+Down   split v
 
 # enter fullscreen mode for the focused container
-#bindsym $mod+F11 fullscreen
-bindsym $mod+m   fullscreen
+#bindsym \$mod+F11 fullscreen
+bindsym \$mod+m   fullscreen
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+z layout tabbed
-bindsym $mod+e layout toggle split
+bindsym \$mod+s layout stacking
+bindsym \$mod+z layout tabbed
+bindsym \$mod+e layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+f floating toggle
+bindsym \$mod+f floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+less focus mode_toggle
+bindsym \$mod+less focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+bindsym \$mod+a focus parent
 
 # focus the child container
-bindsym $mod+Shift+a focus child
+bindsym \$mod+Shift+a focus child
 
 # switch to workspace
-bindsym $mod+ampersand  workspace 1
-bindsym $mod+eacute     workspace 2
-bindsym $mod+quotedbl   workspace 3
-bindsym $mod+apostrophe workspace 4
-bindsym $mod+parenleft  workspace 5
-bindsym $mod+minus      workspace 6
-bindsym $mod+egrave     workspace 7
-bindsym $mod+underscore workspace 8
-bindsym $mod+ccedilla   workspace 9
-bindsym $mod+agrave     workspace 10
-bindsym $mod+F1         workspace 1
-bindsym $mod+F2         workspace 2
-bindsym $mod+F3         workspace 3
-bindsym $mod+F4         workspace 4
-bindsym $mod+F5         workspace 5
-bindsym $mod+F6         workspace 6
-bindsym $mod+F7         workspace 7
-bindsym $mod+F8         workspace 8
-bindsym $mod+F9         workspace 9
-bindsym $mod+F10        workspace 10
-bindsym $mod+F11        workspace 11
-bindsym $mod+F12        workspace 12
+bindsym \$mod+ampersand  workspace 1
+bindsym \$mod+eacute     workspace 2
+bindsym \$mod+quotedbl   workspace 3
+bindsym \$mod+apostrophe workspace 4
+bindsym \$mod+parenleft  workspace 5
+bindsym \$mod+minus      workspace 6
+bindsym \$mod+egrave     workspace 7
+bindsym \$mod+underscore workspace 8
+bindsym \$mod+ccedilla   workspace 9
+bindsym \$mod+agrave     workspace 10
+bindsym \$mod+F1         workspace 1
+bindsym \$mod+F2         workspace 2
+bindsym \$mod+F3         workspace 3
+bindsym \$mod+F4         workspace 4
+bindsym \$mod+F5         workspace 5
+bindsym \$mod+F6         workspace 6
+bindsym \$mod+F7         workspace 7
+bindsym \$mod+F8         workspace 8
+bindsym \$mod+F9         workspace 9
+bindsym \$mod+F10        workspace 10
+bindsym \$mod+F11        workspace 11
+bindsym \$mod+F12        workspace 12
 
 # move focused container to workspace
-bindsym $mod+Shift+ampersand    move container to workspace 1
-bindsym $mod+Shift+eacute       move container to workspace 2
-bindsym $mod+Shift+quotedbl     move container to workspace 3
-bindsym $mod+Shift+apostrophe   move container to workspace 4
-bindsym $mod+Shift+5            move container to workspace 5
-bindsym $mod+Shift+minus        move container to workspace 6
-bindsym $mod+Shift+egrave       move container to workspace 7
-bindsym $mod+Shift+underscore   move container to workspace 8
-bindsym $mod+Shift+ccedilla     move container to workspace 9
-bindsym $mod+Shift+agrave       move container to workspace 10
-bindsym $mod+Shift+F1           move container to workspace 1
-bindsym $mod+Shift+F2           move container to workspace 2
-bindsym $mod+Shift+F3           move container to workspace 3
-bindsym $mod+Shift+F4           move container to workspace 4
-bindsym $mod+Shift+F5           move container to workspace 5
-bindsym $mod+Shift+F6           move container to workspace 6
-bindsym $mod+Shift+F7           move container to workspace 7
-bindsym $mod+Shift+F8           move container to workspace 8
-bindsym $mod+Shift+F9           move container to workspace 9
-bindsym $mod+Shift+F10          move container to workspace 10
-bindsym $mod+Shift+F11          move container to workspace 11
-bindsym $mod+Shift+F12          move container to workspace 12
+bindsym \$mod+Shift+ampersand    move container to workspace 1
+bindsym \$mod+Shift+eacute       move container to workspace 2
+bindsym \$mod+Shift+quotedbl     move container to workspace 3
+bindsym \$mod+Shift+apostrophe   move container to workspace 4
+bindsym \$mod+Shift+5            move container to workspace 5
+bindsym \$mod+Shift+minus        move container to workspace 6
+bindsym \$mod+Shift+egrave       move container to workspace 7
+bindsym \$mod+Shift+underscore   move container to workspace 8
+bindsym \$mod+Shift+ccedilla     move container to workspace 9
+bindsym \$mod+Shift+agrave       move container to workspace 10
+bindsym \$mod+Shift+F1           move container to workspace 1
+bindsym \$mod+Shift+F2           move container to workspace 2
+bindsym \$mod+Shift+F3           move container to workspace 3
+bindsym \$mod+Shift+F4           move container to workspace 4
+bindsym \$mod+Shift+F5           move container to workspace 5
+bindsym \$mod+Shift+F6           move container to workspace 6
+bindsym \$mod+Shift+F7           move container to workspace 7
+bindsym \$mod+Shift+F8           move container to workspace 8
+bindsym \$mod+Shift+F9           move container to workspace 9
+bindsym \$mod+Shift+F10          move container to workspace 10
+bindsym \$mod+Shift+F11          move container to workspace 11
+bindsym \$mod+Shift+F12          move container to workspace 12
 
 # next/previous workspace
-bindsym $alt+Tab            workspace back_and_forth
-bindsym $mod+Tab            workspace back_and_forth
-bindsym $alt+$ctrl+Left     workspace prev
-bindsym $alt+$ctrl+Right    workspace next
+bindsym \$alt+Tab            workspace back_and_forth
+bindsym \$mod+Tab            workspace back_and_forth
+bindsym \$alt+\$ctrl+Left     workspace prev
+bindsym \$alt+\$ctrl+Right    workspace next
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym \$mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym \$mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym \$mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -248,7 +248,7 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
+bindsym \$mod+r mode "resize"
 
 focus_follows_mouse no
 force_focus_wrapping no
@@ -272,7 +272,7 @@ bar {
 
 # Autostart some applications
 
-exec --no-startup-id numlockx off
+exec --no-startup-id numlockx $(laptop-detect && echo off || echo on)
 exec --no-startup-id dunst -key y
 exec --no-startup-id xsetroot -solid black
 exec --no-startup-id nm-applet
