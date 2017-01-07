@@ -11,6 +11,7 @@ sudo sh -c "echo $CDTUX_HOSTNAME > /etc/hostname"
 
 # Other hostnames
 
+[ -e /etc/hosts.orig ] || sudo cp /etc/hosts /etc/hosts.orig
 (   sudo sed -e "s/\(127.0.1.1[\s\t]\).*/\1$CDTUX_HOSTNAME/" -e '/# CDTux/,/# \/CDTux/d' /etc/hosts 
     echo ""
     echo "# CDTux configuration"
@@ -30,6 +31,7 @@ sudo chmod 644 /etc/hosts
 # http://www.framboise314.fr/le-wifi-avec-jessie-en-ligne-de-commande/
 if [ -f /etc/network/interfaces ]
 then
+    [ -e /etc/network/interfaces.orig ] || sudo cp /etc/network/interfaces /etc/network/interfaces.orig
     awk '$1 == "allow-hotplug" {print "auto " $2} {print}' /etc/network/interfaces | awk '!a[$0]++' > /tmp/interfaces
     sudo mv /tmp/interfaces /etc/network/interfaces
     sudo chmod 644 /etc/network/interfaces
@@ -37,6 +39,7 @@ fi
 
 if [ -f /etc/wpa_supplicant/wpa_supplicant.conf ]
 then
+    [ -e /etc/wpa_supplicant/wpa_supplicant.conf.orig ] || sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.orig
     (   sudo sed -e '/# CDTux/,/# \/CDTux/d' /etc/wpa_supplicant/wpa_supplicant.conf
         echo ""
         echo "# CDTux configuration"

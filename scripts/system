@@ -59,10 +59,9 @@ sudo apt full-upgrade
 
 info "SDD optimization"
 
-sudo sed -i '/# SSD optimizations/,/# end of optimizations/d' /etc/fstab
-
 # SSD optimisation: http://doc.ubuntu-fr.org/ssd_solid_state_drive
 [ -e /etc/fstab.orig ] || sudo cp /etc/fstab /etc/fstab.orig
+sudo sed -i '/# SSD optimizations/,/# end of optimizations/d' /etc/fstab
 if ! grep -q 'noatime,discard' /etc/fstab
 then
     sudo sed -i 's#\( /  *ext4  *\)#\1noatime,discard,#' /etc/fstab
