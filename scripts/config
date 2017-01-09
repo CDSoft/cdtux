@@ -36,7 +36,7 @@ get()
     URL=$1
     NAME=$(basename $URL)
     DST=$CACHE/$NAME
-    test -f $DST || wget $URL -O $DST
+    (cd $CACHE && wget -N $URL)
     test -s $DST || rm $DST
 }
 
