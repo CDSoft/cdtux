@@ -34,6 +34,7 @@ case "$1" in
         ;;
     *)
         export PATH=$(echo $PATH | sed -e 's/^.://' -e 's/:.$//' -e 's/:.:/:/')
+        ( cd scripts; ./system ) # implicit dependency to execute first
         find scripts -type f -executable -execdir ./$(basename {}) \;
         ;;
 esac

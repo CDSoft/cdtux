@@ -2,7 +2,6 @@
 
 . ./config
 $INTEL || exit
-./system
 
 title "i3 window manager"
 
