@@ -53,7 +53,7 @@ set tabstop=4
 
 " Selection {{{
 "set clipboard=autoselect
-"set mouse=a
+set mouse=a
 " }}}
 
 " Search {{{
