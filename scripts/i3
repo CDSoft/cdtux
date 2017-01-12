@@ -75,6 +75,7 @@ bindsym \$mod+o          scratchpad show
 
 # some useful shortcuts
 
+bindsym \$mod+space              exec ~/bin/menu
 bindsym \$mod+w                  exec firefox
 bindsym \$mod+t                  exec gvim ~/todo.txt
 bindsym \$mod+n                  exec gvim ~/notes.txt
@@ -650,3 +651,16 @@ cat <<\EOF > ~/.config/dunst/dunstrc
 #
 EOF
 
+cat <<\EOF > ~/bin/menu
+#!/bin/dash
+case $(awk '$1 ~ /\)$/ {print substr($1,1,length($1)-1)}' $0 | dmenu -i -b -p Menu) in
+    mail)           thunderbird ;;
+    web)            firefox ;;
+    hoogle)         surf https://www.haskell.org/hoogle/ ;;
+    scan)           simple-scan ;;
+    calc)           urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc ;;
+    vlc)            vlc ;;
+    libreoffice)    libreoffice ;;
+esac
+EOF
+chmod +x ~/bin/menu
