@@ -1,5 +1,10 @@
 # CDTux
 
+> ![WARNING]
+> This repository is no longer maintained and has been archived.
+>
+> Please consider using [rrpi](https://github.com/CDSoft/rrpi) or [fu](https://github.com/CDSoft/fu) instead.
+
 CDTux is my GNU/Linux "distribution"...
 In fact a set of scripts to install some useful softwares
 for programmers on Ubuntu and Raspbian.
